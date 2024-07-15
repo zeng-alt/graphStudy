@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  application:
+
+    name: graphApplication
+
+  datasource:
+    url: jdbc:h2:file:./data
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+  graphql:
+    path: /graphql
+    graphiql:
+      enabled: true
+
