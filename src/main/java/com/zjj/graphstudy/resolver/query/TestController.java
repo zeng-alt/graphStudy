@@ -14,6 +14,6 @@ public class TestController {
 
     @QueryMapping
     public Users getUsers() {
-        return null;
+        throw new RuntimeException();
     }
 }
