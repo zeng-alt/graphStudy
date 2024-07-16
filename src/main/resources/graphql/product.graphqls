@@ -1,0 +1,12 @@
+extend type Query {
+    product: Product
+    products: [Product]
+    productById(id: Long!): Product
+    findProductById(id: Long): Product
+}
+
+type Product {
+    id: Long
+    name: String
+    price: Float
+}
