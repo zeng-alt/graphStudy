@@ -1,5 +1,5 @@
 type Product {
-    id:Int!
-    name:String!
-    price:Float
+    id: ID
+    name: String
+    price: Float
 }

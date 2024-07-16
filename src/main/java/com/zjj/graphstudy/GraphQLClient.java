@@ -48,11 +48,14 @@ public class GraphQLClient {
 //	}
 
 		@Bean
-		RuntimeWiringConfigurer runtimeWiringConfigurer(ProductRepo productRepo) {
-			return wiringBuilder -> wiringBuilder
-					.type("Query", builder -> builder.dataFetcher("product", QueryByExampleDataFetcher.builder(productRepo).single())
-									.dataFetcher("products", QueryByExampleDataFetcher.builder(productRepo).many())
-					);
+		public RuntimeWiringConfigurer runtimeWiringConfigurer(ProductRepo productRepo) {
+			DataFetcher<Product> single = QuerydslDataFetcher.builder(productRepo).single();
+			DataFetcher<Iterable<Product>> many = QuerydslDataFetcher.builder(productRepo).many();
+
+			return wiringBuilder -> wiringBuilder.type("Query", builder -> builder
+                            .dataFetcher("product", single)
+                            .dataFetcher("products", many)
+                    );
 		}
 
 }

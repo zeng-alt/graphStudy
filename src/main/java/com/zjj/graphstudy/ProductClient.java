@@ -22,15 +22,15 @@ public class ProductClient implements CommandLineRunner {
 	}
 
 	private void getProducts() {
-		for(Product p : service.getProducts()) {
-			System.out.println(p);
-		}
+//		for(Product p : service.getProducts()) {
+//			System.out.println(p);
+//		}
 	}
 
 	private void addProducts() {
-		service.saveProduct(new Product(1, "A", 3434.22));
-		service.saveProduct(new Product(2, "B", 3434.22));
-		service.saveProduct(new Product(3, "C", 3434.22));
+//		service.saveProduct(new Product(1L, "A", 3434.22));
+//		service.saveProduct(new Product(2L, "B", 3434.22));
+//		service.saveProduct(new Product(3L, "C", 3434.22));
 	}
 
 }

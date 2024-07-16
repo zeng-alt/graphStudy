@@ -14,15 +14,15 @@ public class ProductService {
 	@Autowired
 	private ProductRepo productRepo; // interface
 	
-	public Product saveProduct(Product p) {
-		return productRepo.save(p);
-	}
-	
-	public List<Product> getProducts() {
-		return productRepo.findAll();
-	}
-	
-	public Product getProductById(int id) {
-		return productRepo.findById(id).get();
-	}
+//	public Product saveProduct(Product p) {
+//		return productRepo.save(p);
+//	}
+//
+//	public List<Product> getProducts() {
+//		return productRepo.findAll();
+//	}
+//
+//	public Product getProductById(int id) {
+//		return productRepo.findById(id).get();
+//	}
 }

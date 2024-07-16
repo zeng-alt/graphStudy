@@ -28,4 +28,9 @@ spring:
     path: /graphql
     graphiql:
       enabled: true
+logging:
+  level:
+    org.hibernate: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bin: TRACE
 
