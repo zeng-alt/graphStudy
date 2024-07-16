@@ -1,11 +1,3 @@
-#type Query {
-#    getUsers: [Users]
-#}
-
-type Mutation {
-    createUser(user: UserInput): Users
-}
-
 input UserInput {
     name: String
 }

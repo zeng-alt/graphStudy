@@ -1,4 +1,5 @@
 type Query {
+    product:Product
     products:[Product]
     productById(id:Int!):Product
 

@@ -1,5 +1,6 @@
 package com.zjj.graphstudy;
 
+import com.zjj.graphstudy.dao.ProductRepo;
 import com.zjj.graphstudy.entity.Product;
 import com.zjj.graphstudy.service.ProductService;
 import graphql.schema.DataFetcher;
@@ -9,6 +10,8 @@ import graphql.schema.idl.TypeRuntimeWiring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.graphql.data.query.QueryByExampleDataFetcher;
+import org.springframework.graphql.data.query.QuerydslDataFetcher;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 
 import java.util.List;
@@ -21,33 +24,36 @@ public class GraphQLClient {
 	@Autowired
 	ProductService service;
 
-	@Bean
-	RuntimeWiringConfigurer runtimeWiringConfigurer() {
-		return new RuntimeWiringConfigurer() {
+//	@Bean
+//	RuntimeWiringConfigurer runtimeWiringConfigurer(ProductRepo productRepo) {
+//
+//		return builder -> builder
+//			.type("Query", new UnaryOperator<TypeRuntimeWiring.Builder>() {
+//				@Override
+//				public TypeRuntimeWiring.Builder
+//					apply(TypeRuntimeWiring.Builder t) {
+//					return t.dataFetcher("products", new DataFetcher<List<Product>>() {
+//						@Override
+//						public List<Product> get(DataFetchingEnvironment environment) throws Exception {
+//							return service.getProducts();
+//						}
+//					}).dataFetcher("productById",  new DataFetcher<Product>() {
+//						@Override
+//						public Product get(DataFetchingEnvironment environment) throws Exception {
+//							return service.getProductById(environment.getArgument("id"));
+//						}
+//				  });
+//				}
+//        });
+//	}
 
-			@Override
-			public void configure(Builder builder) {
-				builder.type("Query", new UnaryOperator<TypeRuntimeWiring.Builder>() {
-
-					@Override
-					public TypeRuntimeWiring.Builder
-						apply(TypeRuntimeWiring.Builder t) {
-						return t.dataFetcher("products", new DataFetcher<List<Product>>() {
-							@Override
-							public List<Product> get(DataFetchingEnvironment environment) throws Exception {
-								return service.getProducts();
-							}
-						}).dataFetcher("productById",  new DataFetcher<Product>() {
-							@Override
-							public Product get(DataFetchingEnvironment environment) throws Exception {
-								return service.getProductById(environment.getArgument("id"));
-							}
-					  });
-					}
-				});
-			}
-		};
-	}
+		@Bean
+		RuntimeWiringConfigurer runtimeWiringConfigurer(ProductRepo productRepo) {
+			return wiringBuilder -> wiringBuilder
+					.type("Query", builder -> builder.dataFetcher("product", QueryByExampleDataFetcher.builder(productRepo).single())
+									.dataFetcher("products", QueryByExampleDataFetcher.builder(productRepo).many())
+					);
+		}
 
 }
 
