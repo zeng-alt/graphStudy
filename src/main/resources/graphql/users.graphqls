@@ -5,17 +5,28 @@ extend type Mutation {
 extend type Query {
     getUsers: [Users]
     findById(id: Long): Users
+    users(page: PageQuery!): UsersConnection
 }
 
 input UserInput {
-    name: String
+    username: String
 }
 
 
 type Users {
     id: Int
-    name: String
+    username: String
     email: String
     password: String
     role: String
 }
+
+#type UsersEdge {
+#    node: Users!
+#    cursor: String
+#}
+#
+#type UserConnection {
+#    edges: [UsersEdge]!
+#    pageInfo: PageInfo!
+#}

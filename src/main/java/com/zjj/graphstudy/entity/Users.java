@@ -23,7 +23,7 @@ public class Users {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String userName;
+    private String username;
 
     private String email;
 
@@ -32,4 +32,13 @@ public class Users {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<UserRole> userRoles = new LinkedHashSet<>();
 
+
+    public Users() {
+    }
+
+    public Users(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 }

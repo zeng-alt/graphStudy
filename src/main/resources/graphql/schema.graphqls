@@ -2,14 +2,22 @@
 scalar Date
 scalar DateTime
 scalar Long
+scalar Currency
+scalar BigDecimal
 
 # The Root Query for the application
 type Query
 # The Root Mutation for the application
 type Mutation
 
+input PageQuery {
+    page: Int = 1
+    size: Int = 10
+    orderByColumn: String
+    isAsc: String = "ASC"
+}
 
-type Schema {
+schema {
     query: Query
     mutation: Mutation
 }
