@@ -33,6 +33,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    database: h2
 
   h2:
     console:
@@ -41,6 +42,10 @@ spring:
     path: /graphql
     graphiql:
       enabled: true
+  cache:
+    type: caffeine
+    caffeine:
+      spec: initialCapacity=10,maximumSize=200,expireAfterWrite=3s
 
 logging:
   level:

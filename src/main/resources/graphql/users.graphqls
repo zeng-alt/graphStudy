@@ -20,13 +20,3 @@ type Users {
     password: String
     role: String
 }
-
-#type UsersEdge {
-#    node: Users!
-#    cursor: String
-#}
-#
-#type UserConnection {
-#    edges: [UsersEdge]!
-#    pageInfo: PageInfo!
-#}
