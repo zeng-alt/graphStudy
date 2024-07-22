@@ -108,6 +108,14 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-data -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-data</artifactId>
+<!--            <version>6.3.1</version>-->
+        </dependency>
+
+
     </dependencies>
 
     <build>

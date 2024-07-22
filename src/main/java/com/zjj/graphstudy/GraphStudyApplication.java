@@ -9,6 +9,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +25,11 @@ public class GraphStudyApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
         SpringApplication.run(GraphStudyApplication.class, args);
+        PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        String encode = delegatingPasswordEncoder.encode("111");
+        System.out.println(delegatingPasswordEncoder.matches("111", encode));
+//        System.out.println(delegatingPasswordEncoder.encode("111"));
+//        System.out.println(delegatingPasswordEncoder.encode("111"));
     }
 
     @Override
