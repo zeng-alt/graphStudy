@@ -23,15 +23,15 @@ public class LoginController {
     @Resource
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("/userPassword")
-    public Result login(@RequestBody LoginBody loginBody) throws ServerException {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginBody.getUsername(), loginBody.getPassword());
-        try {
-            authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        } catch (BadCredentialsException | UsernameNotFoundException e) {
-            throw new ServerException(e.getMessage());
-        }
-        String token = UUID.randomUUID().toString().replace("-", "");
-        return Result.ok(token);
-    }
+//    @PostMapping("/userPassword")
+//    public Result login(@RequestParam("username") String username, @RequestParam("password") String password) throws ServerException {
+//        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginBody.getUsername(), loginBody.getPassword());
+//        try {
+//            authenticationManager.authenticate(null);
+//        } catch (BadCredentialsException | UsernameNotFoundException e) {
+//            throw new ServerException(e.getMessage());
+//        }
+//        String token = UUID.randomUUID().toString().replace("-", "");
+//        return Result.ok(token);
+//    }
 }

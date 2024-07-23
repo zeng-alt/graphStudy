@@ -50,15 +50,19 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                     author ->
                         author
-                                .requestMatchers("/unauthenticated", "/oauth2/**", "/login/userPassword").permitAll()
+                                .requestMatchers("/**", "/unauthenticated", "/oauth2/**", "/login/**").permitAll()
                         .anyRequest().authenticated()
+                )
+                .headers(
+                        headers -> headers
+                                .frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin())
                 )
                 .formLogin(
                     formLogin -> formLogin
-                            .disable()
-//                        .failureHandler(loginAuthenticationHandler)
-//                        .successHandler(loginAuthenticationHandler)
-//                        .permitAll()
+                            .loginPage("/login")
+                        .failureHandler(loginAuthenticationHandler)
+                        .successHandler(loginAuthenticationHandler)
+                        .permitAll()
                 )
                 .userDetailsService(userDetailsService)
                 .cors(Customizer.withDefaults())  // 开启跨域
