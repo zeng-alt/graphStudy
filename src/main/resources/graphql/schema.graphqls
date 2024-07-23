@@ -10,6 +10,8 @@ type Query
 # The Root Mutation for the application
 type Mutation
 
+type Subscription
+
 input PageQuery {
     page: Int = 1
     size: Int = 10
@@ -17,7 +19,9 @@ input PageQuery {
     isAsc: String = "ASC"
 }
 
+
 schema {
     query: Query
     mutation: Mutation
+    subscription: Subscription
 }

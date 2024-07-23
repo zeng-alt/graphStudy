@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
@@ -24,27 +24,27 @@ public class GraphStudyApplication implements CommandLineRunner {
     private UserRepository userRepository;
 
     public static void main(String[] args) {
-        SpringApplication.run(GraphStudyApplication.class, args);
-        PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        String encode = delegatingPasswordEncoder.encode("111");
-        System.out.println(delegatingPasswordEncoder.matches("111", encode));
-//        System.out.println(delegatingPasswordEncoder.encode("111"));
-//        System.out.println(delegatingPasswordEncoder.encode("111"));
+        ConfigurableApplicationContext run = SpringApplication.run(GraphStudyApplication.class, args);
+
+        System.out.println("已启动");
     }
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
         List<Users> objects = List.of(
-            new Users("张三", "123@qq.com", "123455"),
-            new Users("阿四", "123@qq.com", "123455"),
-            new Users("李四", "123@qq.com", "123455"),
-            new Users("大天", "123@qq.com", "123455"),
-            new Users("小王", "123@qq.com", "123455"),
-            new Users("小一", "123@qq.com", "123455"),
-            new Users("小五", "123@qq.com", "123455"),
-            new Users("大旬", "123@qq.com", "123455"),
-            new Users("张旬", "123@qq.com", "123455"),
-            new Users("张在", "123@qq.com", "123455")
+            new Users("张三", "123@qq.com", passwordEncoder.encode("123455")),
+            new Users("阿四", "123@qq.com", passwordEncoder.encode( "123455")),
+            new Users("李四", "123@qq.com", passwordEncoder.encode( "123455")),
+            new Users("大天", "123@qq.com", passwordEncoder.encode( "123455")),
+            new Users("小王", "123@qq.com", passwordEncoder.encode( "123455")),
+            new Users("小一", "123@qq.com", passwordEncoder.encode( "123455")),
+            new Users("小五", "123@qq.com", passwordEncoder.encode( "123455")),
+            new Users("大旬", "123@qq.com", passwordEncoder.encode( "123455")),
+            new Users("张旬", "123@qq.com", passwordEncoder.encode( "123455")),
+            new Users("张在", "123@qq.com", passwordEncoder.encode( "123455"))
         );
         userRepository.saveAll(objects);
     }

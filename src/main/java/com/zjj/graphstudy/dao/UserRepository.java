@@ -9,6 +9,7 @@ import org.springframework.data.repository.Repository;
 import org.springframework.graphql.data.GraphQlRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author zengJiaJun
@@ -25,4 +26,6 @@ public interface UserRepository extends JpaRepository<Users, Long>, QuerydslPred
     Long findMaxId();
 
     List<Users> findByIdGreaterThan(Long id, Pageable pageable);
+
+    Optional<Users> findByUsername(String username);
 }

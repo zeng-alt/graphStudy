@@ -1,8 +1,8 @@
 server:
   port: 8080
-  compression:
+#  compression:
     # 开启响应压缩
-    enabled: true
+#    enabled: true
 #    mine-type:
 #     - application/javascript
 #     - text/css
@@ -39,6 +39,8 @@ spring:
     console:
       enabled: true
   graphql:
+    websocket:
+      path: /graphql
     path: /graphql
     graphiql:
       enabled: true
@@ -46,6 +48,12 @@ spring:
     type: caffeine
     caffeine:
       spec: initialCapacity=10,maximumSize=200,expireAfterWrite=3s
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    encoding: UTF-8 #编码
+    suffix: .html #模板后缀
+    mode: HTML #模板
 
 logging:
   level:

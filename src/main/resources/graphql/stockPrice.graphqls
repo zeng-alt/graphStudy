@@ -1,0 +1,9 @@
+extend type Subscription {
+    stockPrice(symbol: String): StockPrice
+}
+
+type StockPrice {
+    symbol: String
+    price: String
+    timestamp: String
+}

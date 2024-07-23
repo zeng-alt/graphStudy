@@ -20,4 +20,11 @@ public class Result implements Serializable {
     private String msg;
     private Object data;
 
+    public static Result ok(String data) {
+        Result result = new Result();
+        result.setCode(200);
+        result.setMsg("成功");
+        result.setData(data);
+        return result;
+    }
 }
