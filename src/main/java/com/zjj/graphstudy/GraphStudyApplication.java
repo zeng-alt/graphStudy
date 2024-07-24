@@ -1,9 +1,7 @@
 package com.zjj.graphstudy;
 
 import com.zjj.graphstudy.dao.UserRepository;
-import com.zjj.graphstudy.entity.QProduct;
 import com.zjj.graphstudy.entity.Users;
-import graphql.com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +10,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Arrays;
+
 import java.util.List;
 
 

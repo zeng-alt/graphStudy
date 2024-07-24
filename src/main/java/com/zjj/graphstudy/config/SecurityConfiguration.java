@@ -4,6 +4,7 @@ import com.zjj.graphstudy.filter.CustomAuthenticationFilter;
 import com.zjj.graphstudy.filter.JwtAuthenticationTokenFilter;
 import com.zjj.graphstudy.filter.TenantFilter;
 import com.zjj.graphstudy.handler.LoginAuthenticationHandler;
+import com.zjj.graphstudy.mobilecode.MobilecodeAuthenticationFilter;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -47,6 +48,8 @@ public class SecurityConfiguration {
     @Resource TenantFilter tenantFilter;
     @Resource
     UserDetailsService userDetailsService;
+    @Resource
+    MobilecodeConfiguration mobilecodeConfiguration;
 //    @Resource
 //    private CustomAuthenticationFilter customAuthenticationFilter;
 
@@ -83,10 +86,12 @@ public class SecurityConfiguration {
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .logout(logout -> logout.logoutUrl("logout").logoutSuccessHandler()) // 退出时，设置session无效
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(mobilecodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tenantFilter, AuthorizationFilter.class)
 //                .apply()
-                .build();
+                .with(mobilecodeConfiguration, config -> {}).build();
+//                .build();
         // SpringUtil.getBean(TyplmPartBomService.class).getPartForm(partBomViewList.get(0).getBomTreeNodeList().get(0).oid)
     }
 
@@ -110,10 +115,12 @@ public class SecurityConfiguration {
 //
 //    }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+//        AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
+//
+//        return authenticationManager;
+//    }
 
 //    @Bean
 //    public UserDetailsService userDetailsService() {

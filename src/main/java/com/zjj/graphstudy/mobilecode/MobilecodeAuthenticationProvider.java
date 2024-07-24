@@ -4,6 +4,7 @@ import com.zjj.graphstudy.dto.UserDetailsImpl;
 import com.zjj.graphstudy.service.MobileDetailsService;
 import lombok.Setter;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
@@ -22,12 +24,18 @@ import java.util.Map;
  * @crateTime 2024年07月23日 22:19
  * @version 1.0
  */
+@Component
 public class MobilecodeAuthenticationProvider implements AuthenticationProvider, InitializingBean, MessageSourceAware {
 
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
     @Setter
     private MobileDetailsService mobileDetailsService;
+
+    @Autowired
+    public MobilecodeAuthenticationProvider(MobileDetailsService mobileDetailsService) {
+        this.mobileDetailsService = mobileDetailsService;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
