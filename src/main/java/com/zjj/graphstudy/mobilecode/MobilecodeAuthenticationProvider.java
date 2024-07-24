@@ -1,12 +1,18 @@
 package com.zjj.graphstudy.mobilecode;
 
 import com.zjj.graphstudy.dto.UserDetailsImpl;
+import com.zjj.graphstudy.service.MobileDetailsService;
+import lombok.Setter;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.SpringSecurityMessageSource;
+import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +22,12 @@ import java.util.Map;
  * @crateTime 2024年07月23日 22:19
  * @version 1.0
  */
-public class MobilecodeAuthenticationProvider implements AuthenticationProvider {
+public class MobilecodeAuthenticationProvider implements AuthenticationProvider, InitializingBean, MessageSourceAware {
 
-    private UserDetailsService userDetailsService;
+    protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
+
+    @Setter
+    private MobileDetailsService mobileDetailsService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -39,11 +48,12 @@ public class MobilecodeAuthenticationProvider implements AuthenticationProvider 
         }
 
         // 如果验证码一致，从数据库中读取该手机号对应的用户信息
-        UserDetailsImpl loadedUser = (UserDetailsImpl) userDetailsService.loadUserByUsername(dataFromRedis.get("username"));
-        if (loadedUser == null) {
-            throw new UsernameNotFoundException("用户不存在");
-        }
-        return new MobilecodeAuthenticationToken(loadedUser, null, loadedUser.getAuthorities());
+//        UserDetailsImpl loadedUser = (UserDetailsImpl) userDetailsService.loadUserByUsername(dataFromRedis.get("username"));
+//        if (loadedUser == null) {
+//            throw new UsernameNotFoundException("用户不存在");
+//        }
+//        return new MobilecodeAuthenticationToken(loadedUser, null, loadedUser.getAuthorities());
+        return null;
     }
 
     @Override
@@ -51,7 +61,14 @@ public class MobilecodeAuthenticationProvider implements AuthenticationProvider 
         return MobilecodeAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    public void setUserDetailsService(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(this.mobileDetailsService, "A UserDetailsService must be set");
+    }
+
+    @Override
+    public void setMessageSource(MessageSource messageSource) {
+        this.messages = new MessageSourceAccessor(messageSource);
     }
 }

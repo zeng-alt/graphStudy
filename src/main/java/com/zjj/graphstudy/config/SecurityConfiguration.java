@@ -1,13 +1,16 @@
 package com.zjj.graphstudy.config;
 
+import com.zjj.graphstudy.filter.CustomAuthenticationFilter;
 import com.zjj.graphstudy.filter.JwtAuthenticationTokenFilter;
 import com.zjj.graphstudy.filter.TenantFilter;
 import com.zjj.graphstudy.handler.LoginAuthenticationHandler;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.*;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -16,6 +19,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,6 +46,8 @@ public class SecurityConfiguration {
     @Resource TenantFilter tenantFilter;
     @Resource
     UserDetailsService userDetailsService;
+    @Resource
+    private CustomAuthenticationFilter customAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -50,32 +56,40 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                     author ->
                         author
-                                .requestMatchers("/**", "/unauthenticated", "/oauth2/**", "/login/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
+                                .requestMatchers("/graphiql/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(
                         headers -> headers
-                                .frameOptions(frameOptionsConfig -> frameOptionsConfig.sameOrigin())
+                                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
                 .formLogin(
                     formLogin -> formLogin
-                            .loginPage("/login")
+                         .loginPage("/login")
+                        .failureHandler(loginAuthenticationHandler)
+                        .successHandler(loginAuthenticationHandler)
+                        .permitAll()
+                        .loginPage("/login/mobilecode")
                         .failureHandler(loginAuthenticationHandler)
                         .successHandler(loginAuthenticationHandler)
                         .permitAll()
                 )
                 .userDetailsService(userDetailsService)
                 .cors(Customizer.withDefaults())  // 开启跨域
-                .csrf(AbstractHttpConfigurer::disable)  // 开启csrf 保护
+                .csrf(AbstractHttpConfigurer::disable)  // 关闭csrf 保护
                 .sessionManagement(AbstractHttpConfigurer::disable)  // 每个账户最大的session数量
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .logout(logout -> logout.logoutUrl("logout").logoutSuccessHandler()) // 退出时，设置session无效
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tenantFilter, AuthorizationFilter.class)
 //                .apply()
                 .build();
         // SpringUtil.getBean(TyplmPartBomService.class).getPartForm(partBomViewList.get(0).getBomTreeNodeList().get(0).oid)
     }
+
+
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
@@ -110,10 +124,7 @@ public class SecurityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AuthenticationEventPublisher.class)
-    DefaultAuthenticationEventPublisher defaultAuthenticationEventPublisher(ApplicationEventPublisher delegate) {
-
-        PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        delegatingPasswordEncoder.encode("111");
+    public DefaultAuthenticationEventPublisher defaultAuthenticationEventPublisher(ApplicationEventPublisher delegate) {
         return new DefaultAuthenticationEventPublisher(delegate);
     }
 

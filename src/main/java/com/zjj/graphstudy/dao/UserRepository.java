@@ -27,7 +27,8 @@ public interface UserRepository extends JpaRepository<Users, Long>, QuerydslPred
 
     List<Users> findByIdGreaterThan(Long id, Pageable pageable);
 
-    @Query("SELECT u.id, u.email, u.password, u.username FROM Users u where u.username = :username")
+//    @Query("SELECT u.id, u.email, u.password, u.username FROM Users u where u.username = :username")
     Optional<Users> findByUsername(String username);
 
+    Optional<Users> findByTelephoneNumber(String telephoneNumber);
 }

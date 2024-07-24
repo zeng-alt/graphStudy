@@ -15,6 +15,9 @@ server:
 #    min-response-size: 2KB
 
 spring:
+  messages:
+    basename: i18n/messages
+
   application:
 
     name: graphApplication

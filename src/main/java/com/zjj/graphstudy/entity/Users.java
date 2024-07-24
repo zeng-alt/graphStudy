@@ -29,6 +29,8 @@ public class Users {
 
     private String password;
 
+    private String telephoneNumber;
+
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<UserRole> userRoles = new LinkedHashSet<>();
 
@@ -36,9 +38,10 @@ public class Users {
     public Users() {
     }
 
-    public Users(String username, String email, String password) {
+    public Users(String username, String email, String password, String telephoneNumber) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.telephoneNumber = telephoneNumber;
     }
 }

@@ -35,16 +35,16 @@ public class GraphStudyApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         List<Users> objects = List.of(
-            new Users("张三", "123@qq.com", passwordEncoder.encode("123455")),
-            new Users("阿四", "123@qq.com", passwordEncoder.encode( "123455")),
-            new Users("李四", "123@qq.com", passwordEncoder.encode( "123455")),
-            new Users("大天", "123@qq.com", passwordEncoder.encode( "123455")),
-            new Users("小王", "123@qq.com", passwordEncoder.encode( "123455")),
-            new Users("小一", "123@qq.com", passwordEncoder.encode( "123455")),
-            new Users("小五", "123@qq.com", passwordEncoder.encode( "123455")),
-            new Users("大旬", "123@qq.com", passwordEncoder.encode( "123455")),
-            new Users("张旬", "123@qq.com", passwordEncoder.encode( "123455")),
-            new Users("张在", "123@qq.com", passwordEncoder.encode( "123455"))
+            new Users("张三", "123@qq.com", passwordEncoder.encode("123455"), "12345678911"),
+            new Users("阿四", "123@qq.com", passwordEncoder.encode( "123455"), "12345678912"),
+            new Users("李四", "123@qq.com", passwordEncoder.encode( "123455"), "12345678913"),
+            new Users("大天", "123@qq.com", passwordEncoder.encode( "123455"), "12345678914"),
+            new Users("小王", "123@qq.com", passwordEncoder.encode( "123455"), "12345678915"),
+            new Users("小一", "123@qq.com", passwordEncoder.encode( "123455"), "12345678916"),
+            new Users("小五", "123@qq.com", passwordEncoder.encode( "123455"), "12345678917"),
+            new Users("大旬", "123@qq.com", passwordEncoder.encode( "123455"), "12345678918"),
+            new Users("张旬", "123@qq.com", passwordEncoder.encode( "123455"), "12345678919"),
+            new Users("张在", "123@qq.com", passwordEncoder.encode( "123455"), "12345678910")
         );
         userRepository.saveAll(objects);
     }

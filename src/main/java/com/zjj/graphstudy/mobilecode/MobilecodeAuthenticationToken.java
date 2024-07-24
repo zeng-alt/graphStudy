@@ -1,8 +1,17 @@
 package com.zjj.graphstudy.mobilecode;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.SpringSecurityMessageSource;
+import org.springframework.util.Assert;
 
+import java.io.Serial;
 import java.util.Collection;
 
 /**
@@ -10,11 +19,20 @@ import java.util.Collection;
  * @crateTime 2024年07月23日 22:20
  * @version 1.0
  */
-public class MobilecodeAuthenticationToken extends AbstractAuthenticationToken {
+@EqualsAndHashCode(of = {"phone", "mobileCode"}, callSuper = false)
+public class MobilecodeAuthenticationToken extends AbstractAuthenticationToken implements MessageSourceAware {
+    @Serial
     private static final long serialVersionUID = 530L;
+
+    protected transient MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
+
+    @Getter
     private Object principal;
+    @Getter
     private Object credentials;
+    @Getter
     private String phone;
+    @Getter
     private String mobileCode;
 
 
@@ -33,32 +51,25 @@ public class MobilecodeAuthenticationToken extends AbstractAuthenticationToken {
 
     }
 
-    public Object getCredentials() {
-        return this.credentials;
+    public static MobilecodeAuthenticationToken unauthenticated(String phone, String mobileCode) {
+        return new MobilecodeAuthenticationToken(phone, mobileCode);
     }
 
-    public Object getPrincipal() {
-        return this.principal;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getMobileCode() {
-        return mobileCode;
-    }
-
+    @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        if (isAuthenticated) {
-            throw new IllegalArgumentException("Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
-        } else {
-            super.setAuthenticated(false);
-        }
+        Assert.isTrue(!isAuthenticated,
+                "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
+        super.setAuthenticated(false);
     }
 
+    @Override
     public void eraseCredentials() {
         super.eraseCredentials();
         this.credentials = null;
+    }
+
+    @Override
+    public void setMessageSource(@NonNull MessageSource messageSource) {
+        this.messages = new MessageSourceAccessor(messageSource);
     }
 }
