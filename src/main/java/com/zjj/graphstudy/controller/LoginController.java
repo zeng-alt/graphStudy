@@ -34,4 +34,9 @@ public class LoginController {
 //        String token = UUID.randomUUID().toString().replace("-", "");
 //        return Result.ok(token);
 //    }
+
+//    @PostMapping("/login")
+//    public Result login(@RequestBody LoginBody loginBody) {
+//
+//    }
 }
