@@ -5,10 +5,12 @@ import com.zjj.graphstudy.filter.JwtAuthenticationTokenFilter;
 import com.zjj.graphstudy.filter.TenantFilter;
 import com.zjj.graphstudy.handler.LoginAuthenticationHandler;
 import com.zjj.graphstudy.mobilecode.MobilecodeAuthenticationFilter;
+import com.zjj.graphstudy.mobilecode.MobilecodeAuthenticationProvider;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,6 +31,9 @@ import org.springframework.security.data.repository.query.SecurityEvaluationCont
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -115,12 +120,19 @@ public class SecurityConfiguration {
 //
 //    }
 
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-//        AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration, MobilecodeAuthenticationProvider mobilecodeAuthenticationProvider) throws Exception {
+        AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
+//        ProviderManager providerManager = new ProviderManager();
 //
-//        return authenticationManager;
-//    }
+//        providerManager.setMessageSource(configuration.getMessageSource());
+        List<AuthenticationProvider> authenticationProviders = new ArrayList<>();
+        authenticationProviders.add(mobilecodeAuthenticationProvider);
+        authenticationProviders.add(daoAuthenticationProvider());
+//        return new ProviderManager(authenticationProviders);
+
+        return authenticationManager;
+    }
 
 //    @Bean
 //    public UserDetailsService userDetailsService() {
