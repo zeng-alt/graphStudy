@@ -5,20 +5,16 @@ import com.zjj.graphstudy.filter.JwtAuthenticationTokenFilter;
 import com.zjj.graphstudy.filter.TenantFilter;
 import com.zjj.graphstudy.handler.LoginAuthenticationHandler;
 import com.zjj.graphstudy.mobilecode.MobilecodeAuthenticationFilter;
-import com.zjj.graphstudy.mobilecode.MobilecodeAuthenticationProvider;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.*;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -32,7 +28,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -41,7 +36,7 @@ import java.util.List;
  * @version 1.0
  * @crateTime 2024年07月19日 20:02
  */
-
+@Lazy
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
@@ -53,13 +48,11 @@ public class SecurityConfiguration {
     @Resource TenantFilter tenantFilter;
     @Resource
     UserDetailsService userDetailsService;
-    @Resource
-    MobilecodeConfiguration mobilecodeConfiguration;
-//    @Resource
-//    private CustomAuthenticationFilter customAuthenticationFilter;
+
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationFilter customAuthenticationFilter) throws Exception {
+    @ConditionalOnMissingBean(SecurityFilterChain.class)
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationFilter customAuthenticationFilter, MobilecodeAuthenticationFilter mobilecodeAuthenticationFilter) throws Exception {
 
         return http
                 .authorizeHttpRequests(
@@ -91,64 +84,29 @@ public class SecurityConfiguration {
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .logout(logout -> logout.logoutUrl("logout").logoutSuccessHandler()) // 退出时，设置session无效
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-//                .addFilterBefore(mobilecodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(mobilecodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tenantFilter, AuthorizationFilter.class)
-//                .apply()
-                .with(mobilecodeConfiguration, config -> {}).build();
-//                .build();
+                .build();
         // SpringUtil.getBean(TyplmPartBomService.class).getPartForm(partBomViewList.get(0).getBomTreeNodeList().get(0).oid)
     }
 
-
-
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        daoAuthenticationProvider.setHideUserNotFoundExceptions(false);
-        return daoAuthenticationProvider;
+    @ConditionalOnMissingBean(AuthenticationManager.class)
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration, List<AuthenticationProvider> authenticationProviders, AuthenticationEventPublisher authenticationEventPublisher) throws Exception {
+        ProviderManager providerManager = new ProviderManager(authenticationProviders, configuration.getAuthenticationManager());
+        providerManager.setAuthenticationEventPublisher(authenticationEventPublisher);
+        return providerManager;
     }
-
-//    @Bean
-//    public AuthenticationManager authenticationManager() {
-//        List<AuthenticationProvider> authenticationProviders = new ArrayList<>();
-////        authenticationProviders.add(mobilecodeAuthenticationProvider());
-//        authenticationProviders.add(daoAuthenticationProvider());
-//        return new ProviderManager(authenticationProviders);
-//
-//    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration, MobilecodeAuthenticationProvider mobilecodeAuthenticationProvider) throws Exception {
-        AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
-//        ProviderManager providerManager = new ProviderManager();
-//
-//        providerManager.setMessageSource(configuration.getMessageSource());
-        List<AuthenticationProvider> authenticationProviders = new ArrayList<>();
-        authenticationProviders.add(mobilecodeAuthenticationProvider);
-        authenticationProviders.add(daoAuthenticationProvider());
-//        return new ProviderManager(authenticationProviders);
-
-        return authenticationManager;
-    }
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-//        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-//        manager.createUser(User.withUsername("root1").password("{bcrypt}" + bCryptPasswordEncoder.encode("123456")).roles("ROOT").build());
-//        return manager;
-//    }
 
     @Bean
     @ConditionalOnMissingBean(AuthenticationEventPublisher.class)
-    public DefaultAuthenticationEventPublisher defaultAuthenticationEventPublisher(ApplicationEventPublisher delegate) {
+    public AuthenticationEventPublisher defaultAuthenticationEventPublisher(ApplicationEventPublisher delegate) {
         return new DefaultAuthenticationEventPublisher(delegate);
     }
 
     @Bean
+    @ConditionalOnMissingBean(PasswordEncoder.class)
     public PasswordEncoder passwordEncoder() {
 
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -159,4 +117,33 @@ public class SecurityConfiguration {
         return new SecurityEvaluationContextExtension();
     }
 
+
+
+//    @Bean
+//    public DaoAuthenticationProvider daoAuthenticationProvider() {
+//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+//        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+//        daoAuthenticationProvider.setHideUserNotFoundExceptions(false);
+//        return daoAuthenticationProvider;
+//    }
+
+
+
+    /*
+    无法注入 mobilecodeAuthenticationProvider
+     */
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+//        AuthenticationManager authenticationManager = configuration.getAuthenticationManager();
+//        return authenticationManager;
+//    }
+
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+//        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+//        manager.createUser(User.withUsername("root1").password("{bcrypt}" + bCryptPasswordEncoder.encode("123456")).roles("ROOT").build());
+//        return manager;
+//    }
 }
