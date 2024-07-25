@@ -9,7 +9,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.io.Serial;
@@ -20,7 +19,7 @@ import java.util.Collection;
  * @crateTime 2024年07月23日 22:20
  * @version 1.0
  */
-@EqualsAndHashCode(of = {"phone", "mobileCode"}, callSuper = false)
+@EqualsAndHashCode(of = {"principal", "credentials"}, callSuper = false)
 public class MobilecodeAuthenticationToken extends AbstractAuthenticationToken implements MessageSourceAware {
     @Serial
     private static final long serialVersionUID = 530L;
@@ -30,30 +29,31 @@ public class MobilecodeAuthenticationToken extends AbstractAuthenticationToken i
     @Getter
     private Object principal;
     @Getter
-    private Object credentials;
-    @Getter
-    private String phone;
-    @Getter
-    private String mobileCode;
+    private String credentials;
+
 
 
     public MobilecodeAuthenticationToken(String phone, String mobileCode) {
         super(null);
-        this.phone = phone;
-        this.mobileCode = mobileCode;
+        this.principal = phone;
+        this.credentials = mobileCode;
         this.setAuthenticated(false);
     }
 
-    public MobilecodeAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
+    public MobilecodeAuthenticationToken(Object principal, String mobileCode, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
-        this.credentials = credentials;
+        this.credentials = mobileCode;
         super.setAuthenticated(true);
 
     }
 
     public static MobilecodeAuthenticationToken unauthenticated(String phone, String mobileCode) {
         return new MobilecodeAuthenticationToken(phone, mobileCode);
+    }
+
+    public static MobilecodeAuthenticationToken authenticated(Object principal, String mobileCode, Collection<? extends GrantedAuthority> authorities) {
+        return new MobilecodeAuthenticationToken(principal, mobileCode, authorities);
     }
 
     @Override

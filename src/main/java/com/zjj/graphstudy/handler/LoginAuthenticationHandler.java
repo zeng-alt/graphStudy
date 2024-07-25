@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class LoginAuthenticationHandler implements AuthenticationFailureHandler,
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        User principal = (User) authentication.getPrincipal();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
         HashMap<String, Object> chaims = new HashMap<>();
         chaims.put("user", principal);
         String token = Jwts.builder().setClaims(chaims).signWith(SignatureAlgorithm.HS512, "mysecret").compact();

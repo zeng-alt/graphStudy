@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 /**
  * @author zengJiaJun
  * @crateTime 2024年07月19日 21:35
@@ -35,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, MobileDetails
     public UserMobileDetails loadUserByPhone(String phone) throws MobilecodeNotFoundException {
         return userRepository
                 .findByTelephoneNumber(phone)
-                .map(u -> new UserMobileDetailsImpl(u.getUsername(), u.getPassword(), null, u.getTelephoneNumber(), "2024"))
+                .map(u -> new UserMobileDetailsImpl(u.getUsername(), u.getPassword(), new ArrayList<>(), u.getTelephoneNumber(), "2024"))
                 .orElseThrow(() -> new MobilecodeNotFoundException(phone + " 手机号不存在"));
     }
 

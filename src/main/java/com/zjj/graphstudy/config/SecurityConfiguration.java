@@ -48,6 +48,8 @@ public class SecurityConfiguration {
     @Resource TenantFilter tenantFilter;
     @Resource
     UserDetailsService userDetailsService;
+    @Resource
+    MobilecodeDsl mobilecodeDsl;
 
 
     @Bean
@@ -84,9 +86,10 @@ public class SecurityConfiguration {
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .logout(logout -> logout.logoutUrl("logout").logoutSuccessHandler()) // 退出时，设置session无效
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(mobilecodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(mobilecodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tenantFilter, AuthorizationFilter.class)
+                .with(mobilecodeDsl, dsl -> {})
                 .build();
         // SpringUtil.getBean(TyplmPartBomService.class).getPartForm(partBomViewList.get(0).getBomTreeNodeList().get(0).oid)
     }

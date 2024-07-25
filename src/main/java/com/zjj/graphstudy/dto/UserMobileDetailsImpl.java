@@ -22,6 +22,7 @@ public class UserMobileDetailsImpl extends User implements UserMobileDetails {
         this.code = code;
     }
 
+
     public UserMobileDetailsImpl(String username, String password, String phone, String code, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.phone = phone;
