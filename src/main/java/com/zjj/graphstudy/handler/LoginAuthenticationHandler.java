@@ -9,9 +9,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -26,7 +29,7 @@ import java.util.HashMap;
  */
 @Slf4j
 @Component
-public class LoginAuthenticationHandler implements AuthenticationFailureHandler, AuthenticationSuccessHandler {
+public class LoginAuthenticationHandler implements AuthenticationFailureHandler, AuthenticationSuccessHandler, AccessDeniedHandler, AuthenticationEntryPoint {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         renderString(response, HttpStatus.UNAUTHORIZED.value(), "登录失败 ", exception.getMessage());
@@ -54,5 +57,15 @@ public class LoginAuthenticationHandler implements AuthenticationFailureHandler,
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        renderString(response, HttpStatus.UNAUTHORIZED.value(), "认证失败 ", authException.getMessage());
+    }
+
+    @Override
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        renderString(response, HttpStatus.UNAUTHORIZED.value(), "权限不足 ", accessDeniedException.getMessage());
     }
 }

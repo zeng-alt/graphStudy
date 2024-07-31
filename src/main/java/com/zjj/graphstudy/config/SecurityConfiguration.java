@@ -11,8 +11,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -61,7 +63,8 @@ public class SecurityConfiguration {
                     author ->
                         author
                                 .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-                                .requestMatchers("/graphiql/**").permitAll()
+//                                .requestMatchers("/graphiql/**").permitAll()
+//                                .requestMatchers("/graphql/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(
@@ -69,16 +72,20 @@ public class SecurityConfiguration {
                                 .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
                 .formLogin(
-                    formLogin -> formLogin
-                         .loginPage("/login")
-                        .failureHandler(loginAuthenticationHandler)
-                        .successHandler(loginAuthenticationHandler)
-                        .permitAll()
-                        .loginPage("/login/mobilecode")
-                        .failureHandler(loginAuthenticationHandler)
-                        .successHandler(loginAuthenticationHandler)
-                        .permitAll()
+                        AbstractHttpConfigurer::disable // 禁用，前后端分离项目
+//                         .loginPage("/login")
+//                        .failureHandler(loginAuthenticationHandler)
+//                        .successHandler(loginAuthenticationHandler)
+//                        .permitAll()
+//                        .loginPage("/login/mobilecode")
+//                        .failureHandler(loginAuthenticationHandler)
+//                        .successHandler(loginAuthenticationHandler)
+//                        .permitAll()
                 )
+//                .oauth2Client(
+////                        client -> client
+////                                .init()
+//                )
                 .userDetailsService(userDetailsService)
                 .cors(Customizer.withDefaults())  // 开启跨域
                 .csrf(AbstractHttpConfigurer::disable)  // 关闭csrf 保护
@@ -89,9 +96,23 @@ public class SecurityConfiguration {
 //                .addFilterBefore(mobilecodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tenantFilter, AuthorizationFilter.class)
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(loginAuthenticationHandler)
+                        .authenticationEntryPoint(loginAuthenticationHandler)
+                )
                 .with(mobilecodeDsl, dsl -> {})
                 .build();
         // SpringUtil.getBean(TyplmPartBomService.class).getPartForm(partBomViewList.get(0).getBomTreeNodeList().get(0).oid)
+    }
+
+    @Order(-1)
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setHideUserNotFoundExceptions(false);
+        return daoAuthenticationProvider;
     }
 
     @Bean
@@ -119,17 +140,6 @@ public class SecurityConfiguration {
     public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
         return new SecurityEvaluationContextExtension();
     }
-
-
-
-//    @Bean
-//    public DaoAuthenticationProvider daoAuthenticationProvider() {
-//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-//        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-//        daoAuthenticationProvider.setHideUserNotFoundExceptions(false);
-//        return daoAuthenticationProvider;
-//    }
 
 
 
