@@ -2,6 +2,7 @@ package com.zjj.graphstudy.config;
 
 import com.zjj.graphstudy.filter.CustomAuthenticationFilter;
 import com.zjj.graphstudy.filter.JwtAuthenticationTokenFilter;
+import com.zjj.graphstudy.filter.JwtRenewFilter;
 import com.zjj.graphstudy.filter.TenantFilter;
 import com.zjj.graphstudy.handler.LoginAuthenticationHandler;
 import com.zjj.graphstudy.mobilecode.MobilecodeAuthenticationFilter;
@@ -52,6 +53,8 @@ public class SecurityConfiguration {
     UserDetailsService userDetailsService;
     @Resource
     MobilecodeDsl mobilecodeDsl;
+    @Resource
+    JwtRenewFilter jwtRenewFilter;
 
 
     @Bean
@@ -93,6 +96,7 @@ public class SecurityConfiguration {
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .logout(logout -> logout.logoutUrl("logout").logoutSuccessHandler()) // 退出时，设置session无效
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtRenewFilter, JwtAuthenticationTokenFilter.class)
 //                .addFilterBefore(mobilecodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tenantFilter, AuthorizationFilter.class)

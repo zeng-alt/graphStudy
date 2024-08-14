@@ -1,38 +1,80 @@
-<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3"
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.1"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
-    <id>package</id>
-    <formats>
-        <format>zip</format>
-    </formats>
-    <includeBaseDirectory>true</includeBaseDirectory>
-    <fileSets>
-        <fileSet>
-            <directory>${basedir}/src/main/resources</directory>
-            <includes>
-                <include>*.yml</include>
-            </includes>
-            <filtered>true</filtered>
-            <outputDirectory>${file.separator}config</outputDirectory>
-        </fileSet>
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.1 https://maven.apache.org/xsd/assembly-2.1.1.xsd">
 
+    <!-- 设置程序集的id，项目的特定文件程序集的符号名称。此外，除了通过将其值附加到生成的归档文件来明确地命名组装的包之外，该id在部署时还用作工件的分类器。 -->
+    <id>assembly</id>
+    <formats>
+        <!--打包tar.gz格式。将所有完整的内容打包成压缩包 -->
+        <!--<format>tar.gz</format>-->
+        <format>zip</format>
+        <format>dir</format>
+    </formats>
+
+    <!--生成以${project.build.finalName}名为单位的基础根目录，并将所有打包文件存放于该目录中 -->
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <!-- 指定可执行jar包输出的格式 -->
+    <files>
+        <file>
+            <source>${project.build.directory}/${project.build.finalName}.jar</source>
+            <outputDirectory>${file.separator}</outputDirectory>
+        </file>
+    </files>
+
+    <!-- 指定依赖lib包下面的jar输出的目录 -->
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+            <outputFileNameMapping>
+                ${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}
+            </outputFileNameMapping>
+            <!-- 包含runtime作用域的依赖 -->
+            <scope>runtime</scope>
+        </dependencySet>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+            <outputFileNameMapping>
+                ${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}
+            </outputFileNameMapping>
+            <!-- 包含system作用域的依赖 -->
+            <scope>system</scope>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <!-- 根目录的相关文件打包 -->
         <fileSet>
-            <directory>src/main/resources/runScript</directory>
-            <outputDirectory>${file.separator}bin</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>${project.build.directory}/lib</directory>
-            <outputDirectory>${file.separator}lib</outputDirectory>
-            <includes>
-                <include>*.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.build.directory}</directory>
+            <directory>src/main/resources/</directory>
             <outputDirectory>${file.separator}</outputDirectory>
             <includes>
-                <include>*.jar</include>
+                <include>application.yaml</include>
+                <include>banner.txt</include>
             </includes>
         </fileSet>
+        <!-- 配置文件打包 -->
+        <fileSet>
+            <directory>src/main/resources/graphql</directory>
+            <outputDirectory>${file.separator}graphql</outputDirectory>
+            <filtered>true</filtered>
+            <includes>
+                <include>**/*.graphqls</include>
+            </includes>
+        </fileSet>
+
+        <!-- 配置文件打包 -->
+        <fileSet>
+            <directory>src/main/resources/i18n</directory>
+            <outputDirectory>${file.separator}i18n</outputDirectory>
+            <filtered>true</filtered>
+            <includes>
+                <include>**/*.properties</include>
+            </includes>
+        </fileSet>
+
     </fileSets>
 </assembly>

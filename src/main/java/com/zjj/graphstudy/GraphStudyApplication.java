@@ -23,7 +23,6 @@ public class GraphStudyApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext run = SpringApplication.run(GraphStudyApplication.class, args);
-
         System.out.println("已启动");
     }
 

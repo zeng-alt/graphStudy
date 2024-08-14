@@ -6,6 +6,7 @@ import com.zjj.graphstudy.handler.LoginAuthenticationHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -28,6 +29,7 @@ import java.io.IOException;
  * @version 1.0
  * @crateTime 2024年07月24日 17:33
  */
+@Slf4j
 @Component
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -45,11 +47,11 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     }
 
     @Autowired
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, LoginAuthenticationHandler loginAuthenticationHandler) {
 
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER, authenticationManager);
-        setAuthenticationSuccessHandler(new LoginAuthenticationHandler());
-        setAuthenticationFailureHandler(new LoginAuthenticationHandler());
+        setAuthenticationSuccessHandler(loginAuthenticationHandler);
+        setAuthenticationFailureHandler(loginAuthenticationHandler);
     }
 
     private String getBody(HttpServletRequest request) {
@@ -62,7 +64,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
                 wholeStr.append(str);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("读取body异常", e);
         }
         return wholeStr.toString();
     }

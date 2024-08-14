@@ -1,13 +1,18 @@
 package com.zjj.graphstudy.handler;
 
 import com.alibaba.fastjson2.JSON;
+import com.zjj.graphstudy.cache.CacheConfig;
 import com.zjj.graphstudy.dto.Result;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -21,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * @author zengJiaJun
@@ -30,6 +36,10 @@ import java.util.HashMap;
 @Slf4j
 @Component
 public class LoginAuthenticationHandler implements AuthenticationFailureHandler, AuthenticationSuccessHandler, AccessDeniedHandler, AuthenticationEntryPoint {
+
+    @Resource
+    private CacheManager cacheManager;
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         renderString(response, HttpStatus.UNAUTHORIZED.value(), "登录失败 ", exception.getMessage());
@@ -39,8 +49,10 @@ public class LoginAuthenticationHandler implements AuthenticationFailureHandler,
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         UserDetails principal = (UserDetails) authentication.getPrincipal();
         HashMap<String, Object> chaims = new HashMap<>();
-        chaims.put("user", principal);
+        String uuid = UUID.randomUUID().toString();
+        chaims.put("user", uuid);
         String token = Jwts.builder().setClaims(chaims).signWith(SignatureAlgorithm.HS512, "mysecret").compact();
+        cacheManager.getCache(CacheConfig.Caches.USER.name()).put(uuid, principal);
         renderString(response, HttpStatus.OK.value(), "登录成功", token);
     }
 
@@ -61,11 +73,11 @@ public class LoginAuthenticationHandler implements AuthenticationFailureHandler,
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        renderString(response, HttpStatus.UNAUTHORIZED.value(), "认证失败 ", authException.getMessage());
+        renderString(response, HttpStatus.UNAUTHORIZED.value(), authException.getMessage(), authException.getMessage());
     }
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        renderString(response, HttpStatus.UNAUTHORIZED.value(), "权限不足 ", accessDeniedException.getMessage());
+        renderString(response, HttpStatus.UNAUTHORIZED.value(), accessDeniedException.getMessage(), accessDeniedException.getMessage());
     }
 }
