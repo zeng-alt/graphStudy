@@ -33,7 +33,7 @@ import java.io.IOException;
 @Component
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/login/usernamePassword", "POST");
+    public static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/login/usernamePassword", "POST");
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
 
     public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";

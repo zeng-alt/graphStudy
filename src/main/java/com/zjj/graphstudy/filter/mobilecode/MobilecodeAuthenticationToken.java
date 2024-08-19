@@ -1,4 +1,4 @@
-package com.zjj.graphstudy.mobilecode;
+package com.zjj.graphstudy.filter.mobilecode;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

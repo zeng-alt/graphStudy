@@ -13,14 +13,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * @author zengJiaJun
@@ -32,7 +30,7 @@ public class JwtRenewFilter extends OncePerRequestFilter {
     @Resource
     private CacheManager cacheManager;
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("token");
         if (StringUtils.isNotBlank(token)) {
             Claims mysecret = Jwts.parser().setSigningKey("mysecret").parseClaimsJws(token).getBody();

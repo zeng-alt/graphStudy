@@ -4,8 +4,9 @@ import com.zjj.graphstudy.filter.CustomAuthenticationFilter;
 import com.zjj.graphstudy.filter.JwtAuthenticationTokenFilter;
 import com.zjj.graphstudy.filter.JwtRenewFilter;
 import com.zjj.graphstudy.filter.TenantFilter;
+import com.zjj.graphstudy.filter.login.failure.LoginFailureExcessiveFilter;
 import com.zjj.graphstudy.handler.LoginAuthenticationHandler;
-import com.zjj.graphstudy.mobilecode.MobilecodeAuthenticationFilter;
+import com.zjj.graphstudy.filter.mobilecode.MobilecodeAuthenticationFilter;
 import jakarta.annotation.Resource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationEventPublisher;
@@ -55,6 +56,8 @@ public class SecurityConfiguration {
     MobilecodeDsl mobilecodeDsl;
     @Resource
     JwtRenewFilter jwtRenewFilter;
+    @Resource
+    LoginFailureExcessiveFilter loginFailureExcessiveFilter;
 
 
     @Bean
@@ -98,7 +101,9 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtRenewFilter, JwtAuthenticationTokenFilter.class)
 //                .addFilterBefore(mobilecodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loginFailureExcessiveFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .addFilterBefore(tenantFilter, AuthorizationFilter.class)
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(loginAuthenticationHandler)
@@ -106,6 +111,7 @@ public class SecurityConfiguration {
                 )
                 .with(mobilecodeDsl, dsl -> {})
                 .build();
+
         // SpringUtil.getBean(TyplmPartBomService.class).getPartForm(partBomViewList.get(0).getBomTreeNodeList().get(0).oid)
     }
 

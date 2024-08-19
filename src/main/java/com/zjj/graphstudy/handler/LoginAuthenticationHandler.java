@@ -40,11 +40,18 @@ public class LoginAuthenticationHandler implements AuthenticationFailureHandler,
     @Resource
     private CacheManager cacheManager;
 
+
+    /**
+     * 登录失败
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        renderString(response, HttpStatus.UNAUTHORIZED.value(), "登录失败 ", exception.getMessage());
+        renderString(response, HttpStatus.UNAUTHORIZED.value(), exception.getMessage(), exception.getMessage());
     }
 
+    /**
+     * 登录成功
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         UserDetails principal = (UserDetails) authentication.getPrincipal();
@@ -71,11 +78,17 @@ public class LoginAuthenticationHandler implements AuthenticationFailureHandler,
         }
     }
 
+    /**
+     * 验证失败
+     */
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         renderString(response, HttpStatus.UNAUTHORIZED.value(), authException.getMessage(), authException.getMessage());
     }
 
+    /**
+     * 访问被拒绝
+     */
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         renderString(response, HttpStatus.UNAUTHORIZED.value(), accessDeniedException.getMessage(), accessDeniedException.getMessage());

@@ -1,6 +1,6 @@
-package com.zjj.graphstudy.mobilecode;
+package com.zjj.graphstudy.filter.mobilecode;
 
-import com.zjj.graphstudy.dto.UserDetailsImpl;
+
 import com.zjj.graphstudy.service.MobileDetailsService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,6 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
@@ -21,8 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author zengJiaJun
@@ -34,6 +31,7 @@ import java.util.Map;
 public class MobilecodeAuthenticationProvider implements AuthenticationProvider, InitializingBean, MessageSourceAware {
 
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
+
 
     @Setter
     private MobileDetailsService mobileDetailsService;

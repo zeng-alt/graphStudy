@@ -1,4 +1,4 @@
-package com.zjj.graphstudy.mobilecode;
+package com.zjj.graphstudy.filter.mobilecode;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
