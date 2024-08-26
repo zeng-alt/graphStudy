@@ -1,0 +1,10 @@
+type UserRole {
+    id: Long
+    user: Users
+    role: Roles
+}
+
+extend type Query {
+    userRole: UserRole
+    userRoles: [UserRole]
+}

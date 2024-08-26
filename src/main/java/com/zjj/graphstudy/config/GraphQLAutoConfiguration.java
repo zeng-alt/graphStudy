@@ -1,10 +1,9 @@
 package com.zjj.graphstudy.config;
 
-import com.zjj.graphstudy.dao.BaseRepository;
-import com.zjj.graphstudy.dao.ProductRepo;
-import com.zjj.graphstudy.dao.RoleRepository;
+import com.zjj.graphstudy.dao.*;
 import graphql.scalars.ExtendedScalars;
 import graphql.schema.GraphQLCodeRegistry;
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
@@ -23,6 +22,13 @@ import java.util.List;
 @Configuration
 public class GraphQLAutoConfiguration {
 
+    @Resource
+    private RoleExclusiveRepository roleExclusiveRepository;
+    @Resource
+    private UserRoleRepository userRoleRepository;
+    @Resource
+    private UserGroupRepository userGroupRepository;
+
     public static Class<?> getEntityClass(Object repositoryInstance) {
         Class<?> repoClass = repositoryInstance.getClass();
         Type genericSuperclass = repoClass.getGenericSuperclass();
@@ -39,10 +45,10 @@ public class GraphQLAutoConfiguration {
     @Bean
     public RuntimeWiringConfigurer runtimeWiringConfigurer(ProductRepo productRepo, RoleRepository roleRepository, List<BaseRepository> list) {
 
-        for (BaseRepository baseRepository : list) {
-            Class<?> entityClass = getEntityClass(baseRepository);
-            System.out.println(entityClass);
-        }
+//        for (BaseRepository baseRepository : list) {
+//            Class<?> entityClass = getEntityClass(baseRepository);
+//            System.out.println(entityClass);
+//        }
 
 
         return wiringBuilder -> wiringBuilder
@@ -59,6 +65,18 @@ public class GraphQLAutoConfiguration {
                 .type("Query", builder -> builder
                         .dataFetcher("findRole", QuerydslDataFetcher.builder(roleRepository).single())
                         .dataFetcher("roles", QuerydslDataFetcher.builder(roleRepository).many())
+                )
+                .type("Query", builder -> builder
+                        .dataFetcher("roleExclusive", QuerydslDataFetcher.builder(roleExclusiveRepository).single())
+                        .dataFetcher("roleExclusives", QuerydslDataFetcher.builder(roleExclusiveRepository).many())
+                )
+                .type("Query", builder -> builder
+                        .dataFetcher("userRole", QuerydslDataFetcher.builder(userRoleRepository).single())
+                        .dataFetcher("userRoles", QuerydslDataFetcher.builder(userRoleRepository).many())
+                )
+                .type("Query", builder -> builder
+                        .dataFetcher("userGroup", QuerydslDataFetcher.builder(userGroupRepository).single())
+                        .dataFetcher("userGroups", QuerydslDataFetcher.builder(userGroupRepository).many())
                 )
                 .type("Mutation", builder -> builder
                 );

@@ -1,0 +1,12 @@
+type Permissions {
+    id: Long
+    permsName: String
+    permsKey: String
+    permsType: String
+    rolePermissions: [RolePermission]
+}
+
+extend type Query {
+    permissions: [Permissions]
+    permission: Permissions
+}

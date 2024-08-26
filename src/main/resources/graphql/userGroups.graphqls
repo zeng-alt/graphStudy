@@ -1,0 +1,11 @@
+type UserGroups {
+    id: Long
+    groupName: String
+    users: [Users]
+    roles: [Roles]
+}
+
+extend type Query {
+    userGroup: [UserGroups]
+    userGroups: [UserGroups]
+}

@@ -1,9 +1,6 @@
 package com.zjj.graphstudy.config;
 
-import com.zjj.graphstudy.filter.CustomAuthenticationFilter;
-import com.zjj.graphstudy.filter.JwtAuthenticationTokenFilter;
-import com.zjj.graphstudy.filter.JwtRenewFilter;
-import com.zjj.graphstudy.filter.TenantFilter;
+import com.zjj.graphstudy.filter.*;
 import com.zjj.graphstudy.filter.login.failure.LoginFailureExcessiveFilter;
 import com.zjj.graphstudy.handler.LoginAuthenticationHandler;
 import com.zjj.graphstudy.filter.mobilecode.MobilecodeAuthenticationFilter;
@@ -15,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.*;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -114,6 +113,17 @@ public class SecurityConfiguration {
                 .build();
 
         // SpringUtil.getBean(TyplmPartBomService.class).getPartForm(partBomViewList.get(0).getBomTreeNodeList().get(0).oid)
+    }
+
+    @Resource
+    private AbacPermissionEvaluator abacPermissionEvaluator;
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MethodSecurityExpressionHandler expressionHandler() {
+        var expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setPermissionEvaluator(abacPermissionEvaluator);
+        return expressionHandler;
     }
 
     @Order(-1)

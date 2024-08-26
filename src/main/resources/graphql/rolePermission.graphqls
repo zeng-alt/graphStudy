@@ -1,0 +1,11 @@
+type RolePermission {
+
+    id: Long
+    role: Roles
+    permission: Permissions
+}
+
+extend type Query {
+    rolePermissions: [RolePermission]
+    rolePermission: RolePermission
+}

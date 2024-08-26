@@ -1,0 +1,10 @@
+type RoleExclusive {
+    id: Long
+    roles: Roles
+    exclusiveRole: Roles
+}
+
+extend type Query {
+    roleExclusive: RoleExclusive
+    roleExclusives: [RoleExclusive]
+}
