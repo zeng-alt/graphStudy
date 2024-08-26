@@ -69,8 +69,9 @@ public class SecurityConfiguration {
                     author ->
                         author
                                 .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-//                                .requestMatchers("/graphiql/**").permitAll()
-//                                .requestMatchers("/graphql/**").permitAll()
+                                .requestMatchers("/h2-console/**").permitAll()
+                                .requestMatchers("/graphiql/**").permitAll()
+                                .requestMatchers("/graphql/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(

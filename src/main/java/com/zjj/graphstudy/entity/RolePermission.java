@@ -15,7 +15,7 @@ import lombok.Setter;
 @Table(
         name = "role_permission",
         indexes = {
-            @Index(name = "idx_permission_role_id", columnList = "role_id, permission_id")
+            @Index(name = "idx_permission_role_id", columnList = "role_id, permission_id", unique = true)
         }
 )
 public class RolePermission {

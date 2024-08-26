@@ -34,6 +34,15 @@ public class Users {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<UserRole> userRoles = new LinkedHashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "users_group_user",
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_group_id"))
+    private Set<UserGroups> userGroups = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private Set<UserResource> userResources = new LinkedHashSet<>();
+
 
     public Users() {
     }

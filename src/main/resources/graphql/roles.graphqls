@@ -1,0 +1,12 @@
+type Roles {
+    id: Long
+    roleName: String
+    roleKey: String
+    cardinalityConstraint: Int
+    parentRole: Roles
+}
+
+extend type Query {
+    roles: Roles
+    findRole: Roles
+}

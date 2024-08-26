@@ -9,27 +9,28 @@ import java.util.Set;
 
 /**
  * @author zengJiaJun
- * @crateTime 2024年07月10日 22:33
  * @version 1.0
+ * @crateTime 2024年08月26日 14:35
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "permissions")
-public class Permissions {
+@Table(name = "resources")
+public class Resources {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String permsName;
+    private String resourceUrl;
 
-    private String permsKey;
+    private String requestMade;
 
-    private String permsType;
+    private String requestProtocol;
 
-    @OneToMany(mappedBy = "permission", orphanRemoval = true)
-    private Set<RolePermission> rolePermissions = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "resource", orphanRemoval = true)
+    private Set<Expressions> expressions = new LinkedHashSet<>();
+
 
 }

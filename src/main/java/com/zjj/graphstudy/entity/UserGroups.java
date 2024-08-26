@@ -9,27 +9,26 @@ import java.util.Set;
 
 /**
  * @author zengJiaJun
- * @crateTime 2024年07月10日 22:33
  * @version 1.0
+ * @crateTime 2024年08月26日 14:14
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "permissions")
-public class Permissions {
+@Table(name = "user_groups")
+public class UserGroups {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String permsName;
+    private String groupName;
 
-    private String permsKey;
+    @ManyToMany(mappedBy = "userGroups")
+    private Set<Users> users = new LinkedHashSet<>();
 
-    private String permsType;
-
-    @OneToMany(mappedBy = "permission", orphanRemoval = true)
-    private Set<RolePermission> rolePermissions = new LinkedHashSet<>();
+    @ManyToMany(mappedBy = "roleGroups")
+    private Set<Roles> roles = new LinkedHashSet<>();
 
 }

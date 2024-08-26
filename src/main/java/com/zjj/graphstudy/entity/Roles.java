@@ -3,6 +3,7 @@ package com.zjj.graphstudy.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -27,10 +28,26 @@ public class Roles {
 
     private String roleKey;
 
-    @OneToMany(mappedBy = "role", orphanRemoval = true)
+    @Comment("基数约束")
+    private Integer cardinalityConstraint;
+
+    @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_role_id")
+    private Roles parentRole;
+
+    @OneToMany(mappedBy = "roles", orphanRemoval = true)
+    private Set<RoleExclusive> roleExclusives = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "role", orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<UserRole> userRoles = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "role", orphanRemoval = true)
     private Set<RolePermission> rolePermissions = new LinkedHashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "user_group_role",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_group_id"))
+    private Set<UserGroups> roleGroups = new LinkedHashSet<>();
 
 }
