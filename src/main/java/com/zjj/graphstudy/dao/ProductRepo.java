@@ -8,8 +8,5 @@ import org.springframework.graphql.data.GraphQlRepository;
 
 
 @GraphQlRepository
-public interface ProductRepo extends Repository<Product, Long>, QuerydslPredicateExecutor<Product> {
-	Product findById(Long id);
-
-	Product findProductById(Long id);
+public interface ProductRepo extends BaseRepository<Product, Long> {
 }

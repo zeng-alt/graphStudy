@@ -7,6 +7,7 @@ type Roles {
 }
 
 extend type Query {
-    roles: Roles
+#    roles: Roles
     findRole: Roles
+    findRolesById(id: Long!): Roles
 }

@@ -9,5 +9,5 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.graphql.data.GraphQlRepository;
 
 @GraphQlRepository
-public interface UserRoleRepository extends BaseRepository<UserRole, Long>, QuerydslPredicateExecutor<UserRole> {
+public interface UserRoleRepository extends BaseRepository<UserRole, Long> {
 }

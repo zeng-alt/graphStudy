@@ -2,6 +2,7 @@ package com.zjj.graphstudy.dao;
 
 import com.zjj.graphstudy.entity.PersistentLogins;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -14,7 +15,7 @@ import java.util.Optional;
  * @crateTime 2024年07月19日 21:58
  * @version 1.0
  */
-public interface PersistentLoginsRepository extends PersistentTokenRepository, CrudRepository<PersistentLogins, Long> {
+public interface PersistentLoginsRepository extends PersistentTokenRepository, BaseRepository<PersistentLogins, Long> {
 
     default void createNewToken(PersistentRememberMeToken token) {
         PersistentLogins persistentLogins = new PersistentLogins();

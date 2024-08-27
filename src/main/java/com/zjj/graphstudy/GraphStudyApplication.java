@@ -2,11 +2,14 @@ package com.zjj.graphstudy;
 
 import com.zjj.graphstudy.dao.UserRepository;
 import com.zjj.graphstudy.entity.Users;
+import org.dataloader.DataLoaderRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -14,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 
 
+// 扫描cn.hutool.extra.spring包下所有类并注册之
+//@ComponentScan(basePackages={"cn.hutool.extra.spring"})
+@Import(cn.hutool.extra.spring.SpringUtil.class)
 @SpringBootApplication
 @EnableJpaRepositories
 public class GraphStudyApplication implements CommandLineRunner {

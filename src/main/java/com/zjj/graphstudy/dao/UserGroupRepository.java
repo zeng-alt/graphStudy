@@ -11,5 +11,5 @@ import org.springframework.graphql.data.GraphQlRepository;
  * @version 1.0
  */
 @GraphQlRepository
-public interface UserGroupRepository extends BaseRepository<UserGroups, Long>, QuerydslPredicateExecutor<UserGroups> {
+public interface UserGroupRepository extends BaseRepository<UserGroups, Long> {
 }

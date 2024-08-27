@@ -16,7 +16,7 @@ import java.util.Optional;
  * @version 1.0
  */
 @GraphQlRepository
-public interface UserRepository extends JpaRepository<Users, Long>, QuerydslPredicateExecutor<Users> {
+public interface UserRepository extends BaseRepository<Users, Long> {
 
     @Query("select min(id) from Users")
     Long findMinId();
@@ -30,4 +30,6 @@ public interface UserRepository extends JpaRepository<Users, Long>, QuerydslPred
     Optional<Users> findByUsername(String username);
 
     Optional<Users> findByTelephoneNumber(String telephoneNumber);
+
+    Users findUsersById(Long id);
 }

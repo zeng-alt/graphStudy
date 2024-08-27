@@ -11,5 +11,5 @@ import org.springframework.graphql.data.GraphQlRepository;
  * @version 1.0
  */
 @GraphQlRepository
-public interface PermissionRepository extends BaseRepository<Permissions, Long>, QuerydslPredicateExecutor<Permissions> {
+public interface PermissionRepository extends BaseRepository<Permissions, Long> {
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * @version 1.0
  * @crateTime 2024年08月26日 17:15
  */
-@Repository("roleExclusiveRepository")
 @GraphQlRepository
-public interface RoleExclusiveRepository extends BaseRepository<RoleExclusive, Long>, QuerydslPredicateExecutor<RoleExclusive> {
+public interface RoleExclusiveRepository extends BaseRepository<RoleExclusive, Long> {
+
 }

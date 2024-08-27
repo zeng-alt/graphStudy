@@ -5,7 +5,10 @@ extend type Mutation {
 extend type Query {
     getUsers: [Users]
     findById(id: Long): Users
+    findUserById(id: Long): Users
+    findUsersById(id: Long!): Users
     users(page: PageQuery!): UsersConnection
+    pageUsers(first: Int, after: String, last: Int, before: String): UsersConnection
 }
 
 input UserInput {
@@ -18,5 +21,8 @@ type Users {
     username: String
     email: String
     password: String
-    role: String
+    telephoneNumber: String
+    userRoles: [UserRole]
+    userGroups: [UserGroups]
+#    userResources: [UserRe]
 }
