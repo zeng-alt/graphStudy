@@ -9,8 +9,10 @@ import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.graphql.data.query.QuerydslDataFetcher;
+import org.springframework.graphql.data.query.ScrollSubrange;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 
 import java.lang.reflect.ParameterizedType;
@@ -25,13 +27,6 @@ import java.util.Set;
  */
 @Configuration
 public class GraphQLAutoConfiguration1 {
-
-    @Resource
-    private RoleExclusiveRepository roleExclusiveRepository;
-    @Resource
-    private UserRoleRepository userRoleRepository;
-    @Resource
-    private UserGroupRepository userGroupRepository;
 
     public static Class<?> getEntityClass(Class<?> repoClass) {
         Type genericSuperclass = repoClass.getGenericSuperclass();
@@ -69,6 +64,8 @@ public class GraphQLAutoConfiguration1 {
                         continue;
                     }
 
+//                    ScrollSubrange
+
                     Type[] genericInterfaces = aClass.getGenericInterfaces();
                     for (Type genericInterface : genericInterfaces) {
                         if (genericInterface instanceof ParameterizedType parameterizedType) {
@@ -95,8 +92,8 @@ public class GraphQLAutoConfiguration1 {
                             builder.type("Query", b -> b
                                     .dataFetcher(uncapitalize, QuerydslDataFetcher.builder(baseRepository).single())
                                     .dataFetcher(uncapitalize + "s", QuerydslDataFetcher.builder(baseRepository).many())
-                                    .dataFetcher("page" + capitalize + "s", QuerydslDataFetcher.builder(baseRepository).scrollable())
-                                    .dataFetcher("find" + capitalize + "ById", env -> baseRepository.findById(env.getArgument("id")))
+                                    .dataFetcher("page" + capitalize + "s", QuerydslDataFetcher.builder(baseRepository).sortBy(Sort.by(Sort.Direction.DESC,"id")).scrollable())
+                                    .dataFetcher("find" + capitalize + "ById", env -> baseRepository.findById(env.getArgument("id")).orElse(null))
                             );
                         }
                     }

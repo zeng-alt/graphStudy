@@ -6,15 +6,14 @@ import com.zjj.graphstudy.entity.Users;
 import graphql.relay.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Window;
+import org.springframework.graphql.client.HttpSyncGraphQlClient;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.client.RestClient;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,13 +28,19 @@ public class UserController {
 
     private final UserRepository userRepository;
 
+//    @QueryMapping
+//    public Users user() {
+//        Optional<Users> byId = userRepository.findById(5L);
+//        return byId.orElseGet(null);
+//    }
+
     @QueryMapping
     public List<Users> getUsers() {
         return userRepository.findAll();
     }
 
 
-    @QueryMapping
+//    @QueryMapping
     public Connection<Users> users(@Argument PageQuery page) {
 
         Long minId = userRepository.findMinId();
@@ -54,6 +59,9 @@ public class UserController {
                 page.getStart() > minId,
                 users.size() > page.getSize()
         );
+
+//        RestClient restClient = RestClient.create("");
+//        HttpSyncGraphQlClient httpSyncGraphQlClient = HttpSyncGraphQlClient.create(restClient);
         return new DefaultConnection<>(edges, pageInfo);
     }
 }

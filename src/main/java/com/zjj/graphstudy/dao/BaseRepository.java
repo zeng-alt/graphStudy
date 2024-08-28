@@ -9,6 +9,7 @@ import org.springframework.graphql.data.GraphQlRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author zengJiaJun
@@ -21,7 +22,7 @@ public interface BaseRepository<T, ID> extends Repository<T, ID>, QuerydslPredic
 
     T save(T entity);
 
-    T findById(ID id);
+    Optional<T> findById(ID id);
 
     void deleteById(ID id);
 
