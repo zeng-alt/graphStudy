@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class CacheConfig {
 
     private static final int DEFAULT_MAXSIZE = 1000;
-    private static final int DEFAULT_TTL = 3600;
+    private static final int DEFAULT_TTL = 5;
 
     /**
      * 个性化配置缓存
@@ -47,7 +47,7 @@ public class CacheConfig {
      * 每个cache缺省3600秒过期，最大个数1000
      */
     public enum Caches {
-        USER(1200, 2000),
+        USER(3, 2000),
         ;
 
         private int maxSize = DEFAULT_MAXSIZE;    //最大數量

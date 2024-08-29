@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,7 +43,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
             UserDetails user = cacheManager.getCache(CacheConfig.Caches.USER.name()).get(uuid, UserDetails.class);
             if (user == null) {
-                throw new AccountExpiredException("用户登录时间过期，重新登录");
+                throw new BadCredentialsException("用户登录时间过期，重新登录");
             }
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
@@ -51,5 +52,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+
+
     }
 }

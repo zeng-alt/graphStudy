@@ -6,8 +6,6 @@ import com.zjj.graphstudy.cache.CacheConfig;
 import com.zjj.graphstudy.handler.LoginAuthenticationHandler;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +13,10 @@ import org.springframework.cache.CacheManager;
 import org.springframework.core.log.LogMessage;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -39,7 +34,7 @@ import java.io.IOException;
 @Component
 public class LoginFailureExcessiveFilter extends OncePerRequestFilter {
 
-    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/login/mobilecode", "POST");
+    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/login/usernamePassword", "POST");
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
 
 

@@ -100,16 +100,17 @@ public class SecurityConfiguration {
 //                .logout(logout -> logout.logoutUrl("logout").logoutSuccessHandler()) // 退出时，设置session无效
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtRenewFilter, JwtAuthenticationTokenFilter.class)
-//                .addFilterBefore(mobilecodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(loginFailureExcessiveFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(loginFailureExcessiveFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(mobilecodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .addFilterBefore(tenantFilter, AuthorizationFilter.class)
+                .httpBasic(hbc -> hbc.authenticationEntryPoint(loginAuthenticationHandler))
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(loginAuthenticationHandler)
                         .authenticationEntryPoint(loginAuthenticationHandler)
                 )
-                .with(mobilecodeDsl, dsl -> {})
+//                .with(mobilecodeDsl, dsl -> {})
                 .build();
 
         // SpringUtil.getBean(TyplmPartBomService.class).getPartForm(partBomViewList.get(0).getBomTreeNodeList().get(0).oid)
