@@ -41,27 +41,27 @@ public class UserController {
 
 
 //    @QueryMapping
-    public Connection<Users> users(@Argument PageQuery page) {
-
-        Long minId = userRepository.findMinId();
-        Long maxId = userRepository.findMaxId();
-
-        List<Users> users = userRepository.findByIdGreaterThan((long) page.getStart(), PageRequest.of(0, page.getSize() + 1));
-
-        List edges = users.stream()
-                .limit(page.getSize())
-                .map(user -> new DefaultEdge(user, new DefaultConnectionCursor(String.valueOf(user.getId()))))
-                .collect(Collectors.toList());
-
-        PageInfo pageInfo = new DefaultPageInfo(
-                new DefaultConnectionCursor(String.valueOf(minId)),
-                new DefaultConnectionCursor(String.valueOf(maxId)),
-                page.getStart() > minId,
-                users.size() > page.getSize()
-        );
-
-//        RestClient restClient = RestClient.create("");
-//        HttpSyncGraphQlClient httpSyncGraphQlClient = HttpSyncGraphQlClient.create(restClient);
-        return new DefaultConnection<>(edges, pageInfo);
-    }
+//    public Connection<Users> users(@Argument PageQuery page) {
+//
+//        Long minId = userRepository.findMinId();
+//        Long maxId = userRepository.findMaxId();
+//
+//        List<Users> users = userRepository.findByIdGreaterThan((long) page.getStart(), PageRequest.of(0, page.getSize() + 1));
+//
+//        List edges = users.stream()
+//                .limit(page.getSize())
+//                .map(user -> new DefaultEdge(user, new DefaultConnectionCursor(String.valueOf(user.getId()))))
+//                .collect(Collectors.toList());
+//
+//        PageInfo pageInfo = new DefaultPageInfo(
+//                new DefaultConnectionCursor(String.valueOf(minId)),
+//                new DefaultConnectionCursor(String.valueOf(maxId)),
+//                page.getStart() > minId,
+//                users.size() > page.getSize()
+//        );
+//
+////        RestClient restClient = RestClient.create("");
+////        HttpSyncGraphQlClient httpSyncGraphQlClient = HttpSyncGraphQlClient.create(restClient);
+//        return new DefaultConnection<>(edges, pageInfo);
+//    }
 }

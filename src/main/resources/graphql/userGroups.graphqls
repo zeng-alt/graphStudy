@@ -5,7 +5,7 @@ type UserGroups {
     roles: [Roles]
 }
 
-extend type Query {
-    userGroup: [UserGroups]
-    userGroups: [UserGroups]
-}
+#extend type Query {
+#    userGroup: [UserGroups]
+#    userGroups: [UserGroups]
+#}

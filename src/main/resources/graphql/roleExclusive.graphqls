@@ -4,7 +4,7 @@ type RoleExclusive {
     exclusiveRole: Roles
 }
 
-extend type Query {
-    roleExclusive: RoleExclusive
-    roleExclusives: [RoleExclusive]
-}
+#extend type Query {
+#    roleExclusive: RoleExclusive
+#    roleExclusives: [RoleExclusive]
+#}

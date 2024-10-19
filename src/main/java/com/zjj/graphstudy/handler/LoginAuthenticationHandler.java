@@ -12,8 +12,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.boot.web.servlet.server.Encoding;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -25,6 +27,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -35,6 +38,7 @@ import java.util.UUID;
  */
 @Slf4j
 @Component
+//@ConditionalOnClass(JdbcTemplate.class)
 public class LoginAuthenticationHandler implements AuthenticationFailureHandler, AuthenticationSuccessHandler, AccessDeniedHandler, AuthenticationEntryPoint {
 
     @Resource
@@ -63,8 +67,9 @@ public class LoginAuthenticationHandler implements AuthenticationFailureHandler,
         renderString(response, HttpStatus.OK.value(), "登录成功", token);
     }
 
-    public  void renderString(HttpServletResponse response, int status, String msg, String data) {
+    public void renderString(HttpServletResponse response, int status, String msg, String data) {
         try {
+
             response.setStatus(200);
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");

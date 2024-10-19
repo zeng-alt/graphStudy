@@ -29,5 +29,5 @@ public class PersistentLogins {
 
     private String token;
 
-    private Date lastUsed;
+    private @Transient Date lastUsed;
 }

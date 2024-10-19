@@ -1,6 +1,7 @@
 package com.zjj.graphstudy.config;
 
-import com.zjj.graphstudy.dao.*;
+import com.zjj.graphstudy.dao.BaseRepository;
+import com.zjj.graphstudy.fetcher.FuzzyQueryByExampleDataFetcher;
 import com.zjj.graphstudy.utils.RepositoryUtils;
 import graphql.scalars.ExtendedScalars;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.graphql.data.query.QuerydslDataFetcher;
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 /**
@@ -19,6 +21,77 @@ import java.util.List;
  */
 @Configuration
 public class GraphQLAutoConfiguration {
+
+
+//    @Bean
+//    public GraphQlSourceBuilderCustomizer graphQlSourceBuilderCustomizer(List<BaseRepository> list) {
+//        Class<?> entityType = getEntityType(list.get(0));
+//        EntityUtils.getProperties(entityType);
+//
+//        return new GraphQlSourceBuilderCustomizer() {
+//            @Override
+//            public void customize(GraphQlSource.SchemaResourceBuilder builder) {
+//                System.out.println(builder);
+//                builder.schemaFactory((t, r) -> {
+//                    String sdl = "extend type Query {";
+//                    for (BaseRepository baseRepository : list) {
+//                        RepositoryMetadata repositoryMetadata = RepositoryUtils.getRepositoryMetadata(baseRepository);
+//                        String type = RepositoryUtils.getGraphQlTypeName(baseRepository);
+//                        String graphqlType = type;
+//                        if (StringUtils.isBlank(type)) {
+//                            continue;
+//                        }
+//                        if (type.charAt(type.length() - 1) == 's') {
+//                            type = type.substring(0, type.length() - 1);
+//                        }
+//                        String capitalize = StringUtils.capitalize(type);
+//                        String uncapitalize = StringUtils.uncapitalize(type);
+//                    }
+//
+//
+//
+//                    ObjectTypeExtensionDefinition queryTypeDefinition = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition()
+//                            .name("Query")
+//                            .fieldDefinition(FieldDefinition.newFieldDefinition()
+//                                    .name("hello")
+//                                    .inputValueDefinition(InputValueDefinition.newInputValueDefinition().name("id").type(TypeName.newTypeName("String").build()).build())
+//                                    .type(TypeName.newTypeName("Users").build())
+////                                    .comments(List.of(new Comment("id不能为空", new SourceLocation(1, 1))))
+//                                    .build())
+//                            .build();
+//
+//                    ObjectTypeDefinition userTypeDefinition = ObjectTypeDefinition.newObjectTypeDefinition()
+//                            .name("User")
+//                            .fieldDefinition(FieldDefinition.newFieldDefinition()
+//                                    .name("id")
+//                                    .type(TypeName.newTypeName("ID").build())
+//                                    .build())
+//                            .fieldDefinition(FieldDefinition.newFieldDefinition()
+//                                    .name("name")
+//                                    .type(TypeName.newTypeName("String").build())
+//                                    .build())
+//                            .build();
+//
+//                    // 创建类型定义注册表
+//                    List<Definition> definitions = List.of(userTypeDefinition, queryTypeDefinition);
+////                    TypeDefinitionRegistry registry = new TypeDefinitionRegistry(definitions);
+//
+//                    Document document = Document
+//                            .newDocument()
+//                            .definitions(definitions)
+//                            .build();
+//
+//                    TypeDefinitionRegistry typeRegistry = new SchemaParser().buildRegistry(document);
+//                    t = t.merge(typeRegistry);
+////                    t.add("Query", "findUserById", (DataFetcher) environment -> "id: " + environment.getArgument("id"));
+////                    t.
+//                   return new SchemaGenerator().makeExecutableSchema(t, r);
+//                });
+//            }
+//        };
+//    }
+
+
 
 
     @Bean
@@ -38,18 +111,24 @@ public class GraphQLAutoConfiguration {
                 if (StringUtils.isBlank(type)) {
                     continue;
                 }
+                if (type.charAt(type.length() - 1) == 's') {
+                    type = type.substring(0, type.length() - 1);
+                }
                 String capitalize = StringUtils.capitalize(type);
                 String uncapitalize = StringUtils.uncapitalize(type);
                 builder.type("Query", b -> b
                         .dataFetcher(uncapitalize, QuerydslDataFetcher.builder(baseRepository).single())
                         .dataFetcher(uncapitalize + "s", QuerydslDataFetcher.builder(baseRepository).many())
                         .dataFetcher("page" + capitalize + "s", QuerydslDataFetcher.builder(baseRepository).sortBy(Sort.by(Sort.Direction.DESC,"id")).scrollable())
-                        .dataFetcher("find" + capitalize + "ById", env -> baseRepository.findById(env.getArgument("id")).orElse(null))
+
+                        .dataFetcher("fuzzy" + capitalize + "s", FuzzyQueryByExampleDataFetcher.builder(baseRepository).many())
+                        .dataFetcher("fuzzyPage" + capitalize + "s", FuzzyQueryByExampleDataFetcher.builder(baseRepository).sortBy(Sort.by(Sort.Direction.DESC,"id")).scrollable())
+//                        .dataFetcher("getString", evn -> baseRepository.getById(evn.getArgument("id")))
                 );
             }
         };
-
     }
+
 
 //    @Bean
 //    public RuntimeWiringConfigurer runtimeWiringConfigurer(ProductRepo productRepo, RoleRepository roleRepository, List<BaseRepository> list) {

@@ -19,6 +19,18 @@ input PageQuery {
     isAsc: String = "ASC"
 }
 
+type Starship {
+    id: ID!
+    name: String!
+    length(unit: QueryCriteria = AND): Float
+}
+
+enum QueryCriteria {
+    AND
+    OR
+    NOT
+}
+
 
 schema {
     query: Query

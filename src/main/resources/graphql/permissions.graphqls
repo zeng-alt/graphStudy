@@ -6,7 +6,7 @@ type Permissions {
     rolePermissions: [RolePermission]
 }
 
-extend type Query {
-    permissions: [Permissions]
-    permission: Permissions
-}
+#extend type Query {
+#    permissions: [Permissions]
+#    permission: Permissions
+#}

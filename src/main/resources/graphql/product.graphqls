@@ -1,6 +1,6 @@
 extend type Query {
-    product: Product
-    products: [Product]
+#    product: Product
+#    products: [Product]
     productById(id: Long!): Product
     findProductById(id: Long): Product
 }

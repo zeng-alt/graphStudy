@@ -1,21 +1,25 @@
 extend type Mutation {
-    createUser(user: UserInput): Users
+    createUser(user: UsersInput): Users
 }
 
 
 extend type Query {
-    users(id: [Long]): [Users]
-    user(id: Long): Users
+    fuzzyUsers(email: String): [Users]
+#    users(id: [Long]): [Users]
+    users(user: UsersInput): [Users]
+#    user(id: Long): Users
     getUsers: [Users]
     findById(id: Long): Users
     findUserById(id: Long): Users
     findUsersById(id: Long!): Users
 #    users(page: PageQuery!): UsersConnection
-    pageUsers(first: Int, after: String, last: Int, before: String): UsersConnection
+    pageUsers(first: Int, after: String, last: Int, before: String, email: String): UsersConnection
 }
 
-input UserInput {
-    username: String
+
+input UsersInput {
+    email: String
+    id: Long
 }
 
 

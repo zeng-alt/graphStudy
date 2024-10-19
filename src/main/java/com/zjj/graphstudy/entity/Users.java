@@ -1,5 +1,8 @@
 package com.zjj.graphstudy.entity;
 
+import com.zjj.annotations.Attribute;
+import com.zjj.annotations.GQuery;
+import com.zjj.enums.Condition;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +19,11 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "users")
+@GQuery(value = "findByUsername",
+        attributes = {
+            @Attribute(value = "username", condition = Condition.LIKE)
+        }
+)
 public class Users {
 
     @Id

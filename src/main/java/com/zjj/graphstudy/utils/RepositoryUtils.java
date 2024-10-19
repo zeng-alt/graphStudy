@@ -1,5 +1,6 @@
 package com.zjj.graphstudy.utils;
 
+import com.zjj.graphstudy.dao.BaseRepository;
 import graphql.schema.DataFetchingEnvironment;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -66,6 +67,42 @@ public class RepositoryUtils {
 
         return (StringUtils.hasText(annotation.typeName()) ?
                 annotation.typeName() : RepositoryUtils.getDomainType(repository).getSimpleName());
+    }
+
+    @Nullable
+    public static Class<?> getEntityType(Object repository) {
+        ResolvableType resolvableType = ResolvableType.forInstance(repository);
+        return resolvableType.as(BaseRepository.class).resolveGeneric(0);
+    }
+
+
+    public static CursorStrategy<ScrollPosition> defaultCursorStrategy() {
+        return CursorStrategy.withEncoder(new ScrollPositionCursorStrategy(), CursorEncoder.base64());
+    }
+
+    public static int defaultScrollCount() {
+        return 20;
+    }
+
+    public static Function<Boolean, ScrollPosition> defaultScrollPosition() {
+        return (forward) -> ScrollPosition.offset();
+    }
+
+    public static ScrollSubrange getScrollSubrange(
+            DataFetchingEnvironment env, CursorStrategy<ScrollPosition> cursorStrategy) {
+
+        boolean forward = true;
+        String cursor = env.getArgument("after");
+        Integer count = env.getArgument("first");
+        if (cursor == null && count == null) {
+            cursor = env.getArgument("before");
+            count = env.getArgument("last");
+            if (cursor != null || count != null) {
+                forward = false;
+            }
+        }
+        ScrollPosition pos = (cursor != null) ? cursorStrategy.fromCursor(cursor) : null;
+        return ScrollSubrange.create(pos, count, forward);
     }
 
 
